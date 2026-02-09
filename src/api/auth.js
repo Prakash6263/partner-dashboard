@@ -1,8 +1,9 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const IMAGE_BASE_URL = 'http://localhost:5000';
 
 export const authAPI = {
   login: async (email, password) => {
-    const response = await fetch(`${API_BASE_URL}/api/partner/login`, {
+    const response = await fetch(`${API_BASE_URL}/partner/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ export const authAPI = {
   },
 
   getProfile: async (token) => {
-    const response = await fetch(`${API_BASE_URL}/api/partner/profile`, {
+    const response = await fetch(`${API_BASE_URL}/partner/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -36,7 +37,7 @@ export const authAPI = {
 
   logout: async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/partner/logout`, {
+      const response = await fetch(`${API_BASE_URL}/partner/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -48,4 +49,10 @@ export const authAPI = {
       return false;
     }
   },
+};
+
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return '';
+  if (imagePath.startsWith('http')) return imagePath;
+  return `${IMAGE_BASE_URL}${imagePath}`;
 };
