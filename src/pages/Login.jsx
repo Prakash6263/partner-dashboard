@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -8,10 +8,18 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { login, isAuthenticated } = useAuth()
 
-  const handleSubmit = (e) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -20,11 +28,14 @@ export default function Login() {
       return
     }
 
+    setLoading(true)
     try {
-      login(email, password)
+      await login(email, password)
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError('Login failed. Please try again.')
+      setError(err.message || 'Login failed. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -46,6 +57,7 @@ export default function Login() {
                 placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
             <div className="mb-3">
@@ -56,10 +68,13 @@ export default function Login() {
                 placeholder="••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
             </div>
             <div className="d-grid mt-5">
-              <button type="submit" className="btn btn-primary">Login</button>
+              <button type="submit" className="btn btn-primary" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
             </div>
           </form>
         </div>
