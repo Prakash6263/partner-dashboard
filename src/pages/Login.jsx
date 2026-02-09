@@ -14,10 +14,10 @@ export default function Login() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !loading) {
       navigate('/dashboard', { replace: true })
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, loading, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

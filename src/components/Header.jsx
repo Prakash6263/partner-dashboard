@@ -7,8 +7,8 @@ export default function Header({ title }) {
   const navigate = useNavigate()
   const { logout } = useAuth()
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('/login', { replace: true })
   }
 
